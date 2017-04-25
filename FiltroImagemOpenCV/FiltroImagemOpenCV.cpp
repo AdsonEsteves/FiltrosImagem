@@ -8,6 +8,8 @@
 using namespace cv;
 using namespace std;
 
+//teste de push
+
 Mat escalaCinza(Mat imagemColorida);
 Mat negativoLinear(Mat imagemBase);
 Mat logaritmo(Mat imagemBase);
