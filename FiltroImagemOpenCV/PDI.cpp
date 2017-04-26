@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PDI.h"
 #include <vector>
+#include <iostream>
 
 Mat PDI::escalaCinza(Mat imagemColorida) {
 	Mat aux = imagemColorida.clone();
@@ -473,94 +474,62 @@ int** PDI::kernelCentroPositivo() {
 
 Mat PDI::Erosao(Mat imagemBase) {
 
-	int** kernel = kernelCentroPositivo();
+	int TamKernel = 5;
 	Mat aux = imagemBase.clone();
-	float soma = 0;
-	int tamanhoKernel = 3;
-	int desl = tamanhoKernel;
-	
-	for (int x = 1; x < aux.rows - 1; x++) {
-		for (int y = 1; y < aux.cols - 1; y++) {
-			for (int i = x; i <= x; i++) {
-				for (int j = y; j <= y; j++) {
+	Vec3b pixelReferencia;
+	Vec3b pixelCor;
+	int  ElementoEstruturante[5][5]{
+		255,255,255,255,255,
+		255,255,255,255,255,
+		255,255,0,0,0,
+		255,255,0,0,0,
+		255,255,0,0,0,
+	};
 
-					Vec3b pixelCentral = imagemBase.at<Vec3b>(i, j);
-					Vec3b pixelCima = imagemBase.at<Vec3b>(i - 1, j);
-					Vec3b pixelEsquerda = imagemBase.at<Vec3b>(i, j - 1);
-					Vec3b pixelDireita = imagemBase.at<Vec3b>(i, j + 1);
-					Vec3b pixelBaixo = imagemBase.at<Vec3b>(i + 1, j);
+	for (int x = (TamKernel/2); x < (imagemBase.rows - (TamKernel / 2)); x++) {
+		for (int y = (TamKernel / 2); y < (imagemBase.cols - (TamKernel / 2)); y++) {
+			for (int i = 0; i < TamKernel; i++) {
+				for (int j = 0; j < TamKernel; j++) {
 
-					int vetor[5];
-					vetor[0] = pixelCentral[0];
-					vetor[1] = pixelCima[0];
-					vetor[2] = pixelEsquerda[0];
-					vetor[3] = pixelDireita[0];
-					vetor[4] = pixelBaixo[0];
-						
-					if (ValidaElementoErosao(vetor)) {
-						pixelCentral[0] = 0;
-						pixelCentral[1] = 0;
-						pixelCentral[2] = 0;
-					}
-					else
+					pixelReferencia = imagemBase.at<Vec3b>(x + (TamKernel / 2), (y + (TamKernel / 2)));
+
+					if (pixelReferencia[0] != ElementoEstruturante[i][j])
 					{
-						pixelCentral[0] = 255;
-						pixelCentral[1] = 255;
-						pixelCentral[2] = 255;
+						pixelCor = Cor(0);
 					}
-
-					aux.at<Vec3b>(x, y) = pixelCentral;
-
-					//Bordas esquerdas
-					Vec3b bordasEsquerdas = aux.at<Vec3b>(x, 0);
-
-					bordasEsquerdas[0] = 0;
-					bordasEsquerdas[1] = 0;
-					bordasEsquerdas[2] = 0;
-
-					aux.at<Vec3b>(x, 0) = bordasEsquerdas;
-
-					//Bordas de cima
-					Vec3b bordasCima = aux.at<Vec3b>(0, y);
-
-					bordasCima[0] = 0;
-					bordasCima[1] = 0;
-					bordasCima[2] = 0;
-
-					aux.at<Vec3b>(0, y) = bordasCima;
-
-					//Bordas direita
-					Vec3b bordasDireita = aux.at<Vec3b>(x, aux.cols - 1);
-
-					bordasDireita[0] = 0;
-					bordasDireita[1] = 0;
-					bordasDireita[2] = 0;
-
-					aux.at<Vec3b>(x, aux.cols - 1) = bordasDireita;
-
-					//Bordas baixo
-					Vec3b bordasBaixo = aux.at<Vec3b>(aux.rows - 1, y);
-
-					bordasBaixo[0] = 0;
-					bordasBaixo[1] = 0;
-					bordasBaixo[2] = 0;
-
-					aux.at<Vec3b>(aux.rows - 1, y) = bordasBaixo;
+					else if(pixelReferencia[0] == ElementoEstruturante[i][j])
+					{
+						pixelCor = Cor(1);
+					}
 				}
 			}
+
+			aux.at<Vec3b>((x + (TamKernel / 2)), (y + (TamKernel / 2))) = pixelCor;
 		}
 	}
-
+	
 	return aux;
 }
+
+
+
+
 
 Mat PDI::Dilatacao(Mat imagemBase) {
 
 	int** kernel = kernelCentroPositivo();
 	Mat aux = imagemBase.clone();
-	float soma = 0;
-	int tamanhoKernel = 3;
-	int desl = tamanhoKernel;
+	//float soma = 0;
+	//int tamanhoKernel = 3;
+	//int desl = tamanhoKernel;
+
+	int  ElementoExtruturante[5][5]{
+		0,0,0,0,0,
+		0,0,0,0,0,
+		0,0,1,1,1,
+		0,0,1,1,1,
+	};
+
 
 	for (int x = 1; x < aux.rows - 1; x++) {
 		for (int y = 1; y < aux.cols - 1; y++) {
@@ -572,6 +541,8 @@ Mat PDI::Dilatacao(Mat imagemBase) {
 					Vec3b pixelEsquerda = imagemBase.at<Vec3b>(i, j - 1);
 					Vec3b pixelDireita = imagemBase.at<Vec3b>(i, j + 1);
 					Vec3b pixelBaixo = imagemBase.at<Vec3b>(i + 1, j);
+
+
 
 					int vetor[5];
 					vetor[0] = pixelCentral[0];
@@ -601,6 +572,8 @@ Mat PDI::Dilatacao(Mat imagemBase) {
 	return aux;
 }
 
+
+
 bool PDI::ValidaElementoDilatacao(int vetor[5]) {
 	for (int i = 0; i < 5; i++)
 	{
@@ -621,6 +594,28 @@ bool PDI::ValidaElementoErosao(int vetor[5]) {
 
 	return false;
 
+}
+
+cv::Vec3b Cor(int cor) {
+
+	Vec3b corRetorno;
+
+	if (cor == 255 || cor == 1)
+	{
+		corRetorno[0] = 255;
+		corRetorno[1] = 255;
+		corRetorno[2] = 255;
+
+		return corRetorno;
+	}
+	else if(cor == 0)
+	{
+		corRetorno[0] = 0;
+		corRetorno[1] = 0;
+		corRetorno[2] = 0;
+
+		return corRetorno;
+	}
 }
 
 

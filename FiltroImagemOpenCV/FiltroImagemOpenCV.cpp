@@ -24,17 +24,17 @@ Mat suavizacao(Mat imagemBase, int kernel[3][3], float somaKernel);
 
 int main()
 {
-	Mat original = imread("C:/Users/dougl/Desktop/Aula 4/Erosao.png");
+	Mat original = imread("C:/Users/anton/Documents/Imagens-09/ElementoEstruturante.tif");
 	
 	//Mat suavizada = PDI::suavizacaoMediana(original, 5);
 
 
 	Mat suavizada = PDI::Erosao(original);
 
-	for (int i = 0; i < 40; i++)
-	{
-		suavizada = PDI::Erosao(suavizada);
-	}
+	//for (int i = 0; i < 40; i++)
+	//{
+	//	suavizada = PDI::Erosao(suavizada);
+	//}
 
 	imshow("Erosão", suavizada);
 	suavizada = PDI::Dilatacao(suavizada);
@@ -48,7 +48,7 @@ int main()
 	Mat agucada = original + borda;*/
 
 	imshow("Original", original);
-	imshow("Final", suavizada);
+	//imshow("Final", suavizada);
 	
 	waitKey(0);
 	return 0;
