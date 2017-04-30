@@ -472,12 +472,35 @@ int** PDI::kernelCentroPositivo() {
 	return kernelt;
 }
 
+int RetornaPontoCentral(int atual, int TamKernel) {
+	int retorno = (atual + (TamKernel / 2));
+	return retorno;
+}
+
 Mat PDI::Erosao(Mat imagemBase) {
 
-	int TamKernel = 5;
 	Mat aux = imagemBase.clone();
+
+	int TamKernel = 5;
+	int PosicaoInicial = TamKernel / 2;
+	int PosicaoFinalX = aux.rows - TamKernel;
+	int PosicaoFinalY = aux.cols - TamKernel;
+	int PosicaoFinalI = TamKernel - 1;
+	int PosicaoFinalJ = TamKernel - 1;
+		
 	Vec3b pixelReferencia;
 	Vec3b pixelCor;
+
+	Vec3b Branco;
+	Branco[0] = 255;
+	Branco[1] = 255;
+	Branco[2] = 255;
+	
+	Vec3b Preto;
+	Preto[0] = 0;
+	Preto[1] = 0;
+	Preto[2] = 0;
+
 	int  ElementoEstruturante[5][5]{
 		255,255,255,255,255,
 		255,255,255,255,255,
@@ -485,26 +508,28 @@ Mat PDI::Erosao(Mat imagemBase) {
 		255,255,0,0,0,
 		255,255,0,0,0,
 	};
-
-	for (int x = (TamKernel/2); x < (imagemBase.rows - (TamKernel / 2)); x++) {
-		for (int y = (TamKernel / 2); y < (imagemBase.cols - (TamKernel / 2)); y++) {
-			for (int i = 0; i < TamKernel; i++) {
-				for (int j = 0; j < TamKernel; j++) {
-
-					pixelReferencia = imagemBase.at<Vec3b>(x + (TamKernel / 2), (y + (TamKernel / 2)));
+	
+	for (int x = PosicaoInicial; x < PosicaoFinalX; x++) {
+		for (int y = PosicaoInicial; y < PosicaoFinalY; y++) {
+			
+			for (int i = 0; i < PosicaoFinalI; i++) {
+				for (int j = 0; j < PosicaoFinalJ; j++) {
+					
+					pixelReferencia = imagemBase.at<Vec3b>( (x + i), (y + j) );
 
 					if (pixelReferencia[0] != ElementoEstruturante[i][j])
 					{
-						pixelCor = Cor(0);
+						pixelCor = Preto;
+						break;
 					}
-					else if(pixelReferencia[0] == ElementoEstruturante[i][j])
+					else
 					{
-						pixelCor = Cor(1);
+						pixelCor = Branco;
 					}
 				}
 			}
 
-			aux.at<Vec3b>((x + (TamKernel / 2)), (y + (TamKernel / 2))) = pixelCor;
+			aux.at<Vec3b>((RetornaPontoCentral(x, TamKernel)), (RetornaPontoCentral(y, TamKernel))) = pixelCor;
 		}
 	}
 	
@@ -617,5 +642,7 @@ cv::Vec3b Cor(int cor) {
 		return corRetorno;
 	}
 }
+
+
 
 

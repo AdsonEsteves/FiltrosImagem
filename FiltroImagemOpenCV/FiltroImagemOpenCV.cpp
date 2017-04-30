@@ -37,12 +37,12 @@ int main()
 	//}
 
 	imshow("Erosão", suavizada);
-	suavizada = PDI::Dilatacao(suavizada);
+	//suavizada = PDI::Dilatacao(suavizada);
 
-	for (int i = 0; i < 30; i++)
-	{
-		suavizada = PDI::Dilatacao(suavizada);
-	}
+	//for (int i = 0; i < 30; i++)
+	//{
+	//	suavizada = PDI::Dilatacao(suavizada);
+	//}
 
 	/*Mat borda = original + suavizada;
 	Mat agucada = original + borda;*/
