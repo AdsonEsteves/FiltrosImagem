@@ -37,6 +37,7 @@ public:
 	static Mat Dilatacao(Mat imagemBase);
 	static bool ValidaElementoDilatacao(int vetor[5]);
 	static bool ValidaElementoErosao(int vetor[5]);
+	static Vec3b Cor(int cor);
 	//static Mat somarImagens(Mat imagemBase, Mat imagemSoma, int baseSoma);
 	//static Mat subtrairImagens(Mat imagemBase, Mat imagemSub);
 };

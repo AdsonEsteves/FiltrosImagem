@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 
+
 Mat PDI::escalaCinza(Mat imagemColorida) {
 	Mat aux = imagemColorida.clone();
 
@@ -621,7 +622,7 @@ bool PDI::ValidaElementoErosao(int vetor[5]) {
 
 }
 
-cv::Vec3b Cor(int cor) {
+Vec3b PDI::Cor(int cor) {
 
 	Vec3b corRetorno;
 
